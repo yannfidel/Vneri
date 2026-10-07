@@ -47,6 +47,7 @@ VNERi = PAD ÷ (FC × Dose NE)
 - Botão de **modo escuro**
 - Botão de **tradução PT ⇄ EN** (inclusive do resultado já exibido)
 - Layout **responsivo** (celular, tablet e desktop)
+- **App instalável (PWA):** no celular o site oferece criar um ícone na tela inicial, como um aplicativo (Android: botão “Instalar”; iPhone: instruções “Compartilhar → Adicionar à Tela de Início”). Funciona também offline depois da primeira visita
 - Design moderno e empresarial, com degradês e botões arredondados
 - Sem dependências: apenas HTML, CSS e JavaScript puro
 
@@ -58,8 +59,11 @@ VNERi = PAD ÷ (FC × Dose NE)
 ├── index.html          # Página de boas-vindas e apresentação
 ├── calculadora.html    # Página da calculadora
 ├── style.css           # Estilos (inclui modo escuro)
-├── app.js              # Tema e idioma (dicionário PT/EN)
+├── app.js              # Tema, idioma (dicionário PT/EN) e banner de instalação do app
 ├── script.js           # Lógica da calculadora
+├── manifest.webmanifest # Dados do app instalável (nome, cores, ícones)
+├── sw.js               # Service worker (modo app e offline)
+├── icons/              # Ícones do app (192, 512, maskable, iPhone e favicon)
 ├── LICENSE
 └── README.md
 ```
@@ -107,7 +111,9 @@ Esta ferramenta tem **finalidade exclusivamente educacional e de apoio**. Ela **
 | **Maria Aparecida de Macedo Fidelis Vasconcelos** | Farmacêutica clínica |
 | **Yann Fidelis Vasconcelos** | Desenvolvedor web e designer |
 
-<!-- Sugestão: adicione aqui a referência completa do estudo ANDROMEDA-SHOCK e de outras fontes clínicas usadas no conteúdo. -->
+## 📚 Referência
+
+- Estudo de referência do projeto: [Ability of diastolic arterial pressure to better characterize the severity of septic shock when adjusted for heart rate and norepinephrine dose](https://pmc.ncbi.nlm.nih.gov/articles/PMC11937472/) (PubMed Central, PMC11937472)
 
 ---
 
