@@ -342,6 +342,39 @@ html[data-theme="dark"] .vaso.yes { background: linear-gradient(135deg, #2c1517,
 html[data-theme="dark"] .vaso.no { background: linear-gradient(135deg, #102a1e, #143524); border-color: #2f7a52; color: #b8f0d1; }
 html[data-theme="dark"] .cta { background: linear-gradient(135deg, #0a5a66, #134b87 70%, #0b2a4a); }
 
+/* ---------- Estudo de referência (rodapé) ---------- */
+.source { font-size: .88rem; margin-bottom: 10px; max-width: 760px; margin-inline: auto; }
+.source a { color: var(--teal-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.source a:hover { color: var(--blue); }
+html[data-theme="dark"] .source a:hover { color: #8ff3e6; }
+
+/* ---------- Banner de instalação do app (celular) ---------- */
+.pwa-banner {
+  position: fixed; left: 14px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 100;
+  max-width: 520px; margin-inline: auto; display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 26px; color: #fff;
+  background: linear-gradient(135deg, #0b2a4a 0%, #0f4c81 55%, #00a3a3 100%);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .35); animation: pwa-up .45s ease;
+}
+@keyframes pwa-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.pwa-icon { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 15px; }
+.pwa-text { flex: 1; min-width: 0; }
+.pwa-text strong { display: block; font-size: .98rem; line-height: 1.25; }
+.pwa-text span { display: block; font-size: .82rem; opacity: .92; margin-top: 2px; line-height: 1.35; }
+.pwa-actions { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+.pwa-btn {
+  border: 0; border-radius: 999px; cursor: pointer; padding: 9px 18px;
+  font: 600 .85rem "Poppins", "Segoe UI", sans-serif; transition: transform .15s;
+}
+.pwa-btn:active { transform: scale(.97); }
+.pwa-btn.main { background: #fff; color: #0b2a4a; }
+.pwa-btn.ghost { background: rgba(255, 255, 255, .16); color: #fff; }
+@media (max-width: 380px) {
+  .pwa-banner { flex-wrap: wrap; }
+  .pwa-actions { flex-direction: row; width: 100%; }
+  .pwa-btn { flex: 1; }
+}
+
 /* ---------- Responsivo ---------- */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; padding: 48px 28px; }
