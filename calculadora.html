@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="title.calc">Calculadora VNERi</title>
   <meta name="description" content="Calculadora VNERi / VNERi calculator">
+  <!-- App instalável (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b2a4a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="VNERi">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
   <script>
     try {
       var th = localStorage.getItem('vneri-theme');
@@ -189,6 +198,10 @@
         </div>
       </div>
     </div>
+    <p class="source">
+      <span data-i18n="src.label">Estudo de referência:</span>
+      <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11937472/" target="_blank" rel="noopener noreferrer" data-i18n="src.title">Ability of diastolic arterial pressure to better characterize the severity of septic shock when adjusted for heart rate and norepinephrine dose</a>
+    </p>
     <p class="foot-note" data-i18n="foot.note">VNERi · Projeto educacional de apoio à decisão clínica · Não substitui avaliação médica</p>
   </div>
 </footer>
