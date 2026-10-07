@@ -68,6 +68,16 @@
       'role.pharm': `Farmacêutica clínica`,
       'role.dev': `Desenvolvedor web e designer`,
       'foot.note': `VNERi · Projeto educacional de apoio à decisão clínica · Não substitui avaliação médica`,
+      'src.label': `Estudo de referência:`,
+      'src.title': `Ability of diastolic arterial pressure to better characterize the severity of septic shock when adjusted for heart rate and norepinephrine dose`,
+
+      'pwa.title': `Instale o app VNERi`,
+      'pwa.text': `Tenha a calculadora na tela inicial do celular, como um aplicativo.`,
+      'pwa.install': `Instalar`,
+      'pwa.later': `Agora não`,
+      'pwa.ios.title': `Instale o app VNERi no iPhone`,
+      'pwa.ios.step': `Toque em <b>Compartilhar</b> (o quadrado com uma seta) e depois em <b>Adicionar à Tela de Início</b>.`,
+      'pwa.ios.ok': `Entendi`,
 
       'calc.h1': `Calculadora VNERi`,
       'calc.sub': `Preencha os três campos para obter o índice e a interpretação do resultado.`,
@@ -208,6 +218,16 @@
       'role.pharm': `Clinical pharmacist`,
       'role.dev': `Web developer and designer`,
       'foot.note': `VNERi · Educational clinical decision support project · Does not replace medical evaluation`,
+      'src.label': `Reference study:`,
+      'src.title': `Ability of diastolic arterial pressure to better characterize the severity of septic shock when adjusted for heart rate and norepinephrine dose`,
+
+      'pwa.title': `Install the VNERi app`,
+      'pwa.text': `Keep the calculator on your phone's home screen, like an app.`,
+      'pwa.install': `Install`,
+      'pwa.later': `Not now`,
+      'pwa.ios.title': `Install the VNERi app on iPhone`,
+      'pwa.ios.step': `Tap <b>Share</b> (the square with an arrow) and then <b>Add to Home Screen</b>.`,
+      'pwa.ios.ok': `Got it`,
 
       'calc.h1': `VNERi Calculator`,
       'calc.sub': `Fill in the three fields to get the index and the interpretation of the result.`,
@@ -348,4 +368,110 @@
   });
 
   applyLang();
+})();
+
+/* ============ App instalável (PWA) ============
+   - Registra o service worker (sw.js) para o site funcionar como app e offline.
+   - No celular, mostra um banner convidando a instalar:
+       Android/Chrome: botão "Instalar" (usa o aviso nativo do navegador)
+       iPhone/iPad:    instruções "Compartilhar > Adicionar à Tela de Início"
+   - Não aparece se o app já estiver instalado/aberto como app, nem por 7 dias após dispensar.
+*/
+(function () {
+  const KEY = 'vneri-pwa-dismissed';
+  const WEEK = 7 * 24 * 60 * 60 * 1000;
+  const t = (k) => window.t(k);
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignora */ } }
+  };
+
+  const isStandalone = () =>
+    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isMobile = () =>
+    window.matchMedia('(max-width: 900px)').matches || window.matchMedia('(pointer: coarse)').matches;
+  const isIOS = () =>
+    /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const dismissedRecently = () => {
+    const ts = parseInt(store.get(KEY), 10);
+    return !isNaN(ts) && Date.now() - ts < WEEK;
+  };
+
+  let deferredPrompt = null;
+  let banner = null;
+
+  function paint() {
+    if (!banner) return;
+    const ios = !deferredPrompt && isIOS();
+    banner.querySelector('.pwa-text strong').textContent = t(ios ? 'pwa.ios.title' : 'pwa.title');
+    const sub = banner.querySelector('.pwa-text span');
+    if (ios) sub.innerHTML = t('pwa.ios.step'); else sub.textContent = t('pwa.text');
+    const main = banner.querySelector('.pwa-btn.main');
+    main.textContent = t(ios ? 'pwa.ios.ok' : 'pwa.install');
+    const later = banner.querySelector('.pwa-btn.ghost');
+    later.textContent = t('pwa.later');
+    later.hidden = ios;
+  }
+
+  function hide() {
+    if (banner) { banner.remove(); banner = null; }
+  }
+
+  function dismiss() {
+    store.set(KEY, String(Date.now()));
+    hide();
+  }
+
+  function show() {
+    if (banner || isStandalone() || !isMobile() || dismissedRecently()) return;
+    if (!deferredPrompt && !isIOS()) return;   // navegador sem suporte à instalação
+
+    banner = document.createElement('div');
+    banner.className = 'pwa-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.innerHTML =
+      '<img class="pwa-icon" src="icons/icon-192.png" alt="" width="48" height="48">' +
+      '<div class="pwa-text"><strong></strong><span></span></div>' +
+      '<div class="pwa-actions">' +
+      '<button type="button" class="pwa-btn main"></button>' +
+      '<button type="button" class="pwa-btn ghost"></button>' +
+      '</div>';
+    document.body.appendChild(banner);
+    paint();
+
+    banner.querySelector('.pwa-btn.ghost').addEventListener('click', dismiss);
+    banner.querySelector('.pwa-btn.main').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        const p = deferredPrompt;
+        deferredPrompt = null;
+        p.prompt();
+        try { await p.userChoice; } catch (e) { /* ignora */ }
+        hide();
+      } else {
+        dismiss();   // iPhone: "Entendi"
+      }
+    });
+  }
+
+  // Android / Chrome: o navegador avisa quando o site pode ser instalado
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    show();
+  });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; hide(); });
+
+  // iPhone / iPad: não existe aviso nativo, então mostramos as instruções
+  if (isIOS()) setTimeout(show, 1500);
+
+  document.addEventListener('langchange', paint);
+
+  // Service worker (só funciona em http/https, não ao abrir o arquivo direto)
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => { /* ignora */ });
+    });
+  }
 })();
